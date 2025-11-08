@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WinX - Prédictions Football IA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="dark-mode">
+    <div class="app-container">
+        <!-- Header -->
+        <header class="dark-header">
+            <div class="header-content">
+                <div class="logo">
+                    <button class="mobile-menu-btn dark-theme-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="logo-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>WinX</h1>
+                        <p>SmartPredict AI</p>
+                    </div>
+                </div>
+
+                <nav class="nav-desktop">
+                    <div class="nav-item dark-nav-item active" data-page="home">Accueil</div>
+                    <div class="nav-item dark-nav-item" data-page="predictions">Prédictions</div>
+                    <div class="nav-item dark-nav-item" data-page="vip">VIP</div>
+                    <div class="nav-item dark-nav-item" data-page="stats">Statistiques</div>
+                </nav>
+
+                <div class="header-actions">
+                    <button class="theme-toggle dark-theme-toggle">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                    
+                    <div class="user-section">
+                        <button class="user-btn dark-user-btn">
+                            <i class="fas fa-user"></i>
+                        </button>
+                        
+                        <div class="user-menu dark-user-menu" style="display: none;">
+                            <div class="user-header">
+                                <p class="user-name">Nom Utilisateur</p>
+                                <p class="user-email">email@exemple.com</p>
+                                <div class="user-stats">
+                                    <i class="fas fa-gem"></i>
+                                    <span>5 Gemmes</span>
+                                </div>
+                            </div>
+                            <div class="user-actions">
+                                <button class="user-action dark-user-action" data-page="account">
+                                    <i class="fas fa-cog"></i>
+                                    <span>Mon compte</span>
+                                </button>
+                                <button class="user-action dark-user-action admin-btn">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Admin Panel</span>
+                                </button>
+                                <button class="user-action dark-user-action logout-btn">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <span>Déconnexion</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="login-btn">Connexion</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Mobile Menu -->
+        <div class="mobile-menu" style="display: none;">
+            <div class="mobile-menu-header dark-mobile-menu-header">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>WinX</h1>
+                        <p>SmartPredict AI</p>
+                    </div>
+                </div>
+                <button class="close-mobile-menu dark-theme-toggle">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <nav class="mobile-nav">
+                <div class="mobile-nav-item dark-mobile-nav-item active" data-page="home">Accueil</div>
+                <div class="mobile-nav-item dark-mobile-nav-item" data-page="predictions">Prédictions</div>
+                <div class="mobile-nav-item dark-mobile-nav-item" data-page="vip">VIP</div>
+                <div class="mobile-nav-item dark-mobile-nav-item" data-page="stats">Statistiques</div>
+                <div class="mobile-nav-item dark-mobile-nav-item" data-page="account">Mon compte</div>
+                <div class="mobile-nav-item dark-mobile-nav-item admin-btn">Admin Panel</div>
+                <div class="mobile-nav-item dark-mobile-nav-item logout-btn">Déconnexion</div>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <main id="main-content">
+            <!-- Pages will be loaded here dynamically -->
+        </main>
+
+        <!-- Auth Modal -->
+        <div class="modal-overlay" id="auth-modal" style="display: none;">
+            <div class="modal dark-modal">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="auth-modal-title">Connexion</h3>
+                    <button class="close-btn" id="close-auth-modal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="auth-tabs">
+                    <button class="auth-tab dark-auth-tab active" data-tab="login">Connexion</button>
+                    <button class="auth-tab dark-auth-tab" data-tab="register">Inscription</button>
+                </div>
+                
+                <form id="login-form" class="auth-form active">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input dark-form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" class="form-input dark-form-input" required>
+                    </div>
+                    <button type="submit" class="submit-btn">Se connecter</button>
+                </form>
+                
+                <form id="register-form" class="auth-form">
+                    <div class="form-group">
+                        <label class="form-label">Nom</label>
+                        <input type="text" class="form-input dark-form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input dark-form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" class="form-input dark-form-input" required>
+                    </div>
+                    <button type="submit" class="submit-btn">S'inscrire</button>
+                </form>
+                
+                <div class="auth-switch">
+                    <span id="auth-switch-text">Pas de compte ? </span>
+                    <button class="auth-switch-btn" id="auth-switch-btn">S'inscrire</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div class="admin-overlay" id="admin-panel" style="display: none;">
+            <div class="admin-panel dark-admin-panel">
+                <div class="admin-header">
+                    <div class="admin-title">
+                        <i class="fas fa-shield-alt admin-icon"></i>
+                        <span>Panel Administrateur</span>
+                    </div>
+                    <button class="close-btn" id="close-admin-panel">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="admin-content">
+                    <div>
+                        <h3 class="admin-form-title" id="admin-form-title">Nouvelle prédiction</h3>
+                        
+                        <form id="admin-prediction-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Logo Équipe A</label>
+                                    <input type="file" class="form-input dark-form-input admin-image-upload" id="team-a-logo" accept="image/*">
+                                    <img class="admin-image-preview dark-admin-image-preview" id="team-a-preview" style="display: none;">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Logo Équipe B</label>
+                                    <input type="file" class="form-input dark-form-input admin-image-upload" id="team-b-logo" accept="image/*">
+                                    <img class="admin-image-preview dark-admin-image-preview" id="team-b-preview" style="display: none;">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Équipe A</label>
+                                    <input type="text" class="form-input dark-form-input" id="team-a" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Équipe B</label>
+                                    <input type="text" class="form-input dark-form-input" id="team-b" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Ligue/Tournoi</label>
+                                <div class="league-selector">
+                                    <div class="league-option dark-league-option active" data-league="Ligue 1">Ligue 1</div>
+                                    <div class="league-option dark-league-option" data-league="Premier League">Premier League</div>
+                                    <div class="league-option dark-league-option" data-league="La Liga">La Liga</div>
+                                    <div class="league-option dark-league-option" data-league="Serie A">Serie A</div>
+                                    <div class="league-option dark-league-option" data-league="Bundesliga">Bundesliga</div>
+                                    <div class="league-option dark-league-option" data-league="Ligue des Champions">Ligue des Champions</div>
+                                    <div class="league-option dark-league-option" data-league="Ligue Europa">Ligue Europa</div>
+                                    <div class="league-option dark-league-option" data-league="Coupe de France">Coupe de France</div>
+                                    <div class="league-option dark-league-option" data-league="Coupe d'Angleterre">Coupe d'Angleterre</div>
+                                    <div class="league-option dark-league-option" data-league="Coupe d'Espagne">Coupe d'Espagne</div>
+                                </div>
+                                <input type="hidden" id="league" value="Ligue 1">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Date</label>
+                                    <input type="date" class="form-input dark-form-input" id="date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Heure</label>
+                                    <input type="time" class="form-input dark-form-input" id="time" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Type de pari</label>
+                                <div class="prediction-type-selector">
+                                    <div class="prediction-type-option dark-prediction-type-option active" data-type="combo">Combo</div>
+                                    <div class="prediction-type-option dark-prediction-type-option" data-type="vip">VIP</div>
+                                    <div class="prediction-type-option dark-prediction-type-option" data-type="unique">Unique</div>
+                                    <div class="prediction-type-option dark-prediction-type-option" data-bet-type="victory">Victoire</div>
+                                    <div class="prediction-type-option dark-prediction-type-option" data-bet-type="btts">BTTS</div>
+                                    <div class="prediction-type-option dark-prediction-type-option" data-bet-type="over">Over 2.5</div>
+                                    <div class="prediction-type-option dark-prediction-type-option" data-bet-type="under">Under 2.5</div>
+                                    <div class="prediction-type-option dark-prediction-type-option" data-bet-type="draw">Match Nul</div>
+                                </div>
+                                <input type="hidden" id="type" value="combo">
+                                <input type="hidden" id="bet-type" value="victory">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Prédiction</label>
+                                    <select class="form-input dark-form-input" id="prediction">
+                                        <option value="1">1</option>
+                                        <option value="X">X</option>
+                                        <option value="2">2</option>
+                                        <option value="1X">1X</option>
+                                        <option value="X2">X2</option>
+                                        <option value="12">12</option>
+                                        <option value="BTTS Oui">BTTS Oui</option>
+                                        <option value="BTTS Non">BTTS Non</option>
+                                        <option value="Over 2.5">Over 2.5</option>
+                                        <option value="Under 2.5">Under 2.5</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Cote</label>
+                                    <input type="number" step="0.01" class="form-input dark-form-input" id="odds" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Coût en gemmes</label>
+                                    <input type="number" class="form-input dark-form-input" id="gem-cost" value="1" min="1" max="10">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Confiance IA: <span id="confidence-value">75</span>%</label>
+                                <input type="range" min="50" max="100" value="75" class="form-full" id="confidence">
+                            </div>
+
+                            <button type="button" class="ai-generate-btn" id="generate-analysis-btn">
+                                <i class="fas fa-robot"></i>
+                                Générer l'analyse avec IA
+                            </button>
+
+                            <div class="form-group">
+                                <label class="form-label">Analyse</label>
+                                <textarea class="form-input dark-form-input" id="analysis" rows="3" required></textarea>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="primary-btn">
+                                    <i class="fas fa-save"></i>
+                                    <span id="admin-submit-text">Ajouter</span>
+                                </button>
+                                <button type="button" class="secondary-btn dark-secondary-btn" id="cancel-edit" style="display: none;">
+                                    Annuler
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div>
+                        <h3 class="admin-form-title">Prédictions existantes (<span id="predictions-count">0</span>)</h3>
+                        
+                        <div class="predictions-list" id="admin-predictions-list">
+                            <!-- Admin predictions list will be loaded here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
