@@ -1,0 +1,50 @@
+<section id="account-page" class="page">
+    <h2 class="section-title">Mon Compte</h2>
+    
+    <div class="account-section">
+        <div class="account-card dark-account-card">
+            <h3>Photo de profil</h3>
+            <div class="profile-image-container" id="profile-image-container">
+                <div class="profile-image-placeholder" id="profile-image-placeholder">
+                    <i class="fas fa-user"></i>
+                </div>
+                <img class="profile-image" id="profile-image" style="display: none;">
+                <div class="profile-image-upload">
+                    <i class="fas fa-camera"></i> Modifier
+                </div>
+                <input type="file" id="profile-image-input" accept="image/*" style="display: none;">
+            </div>
+            
+            <h3>Informations du compte</h3>
+            <div class="form-group">
+                <label class="form-label">Nom</label>
+                <input type="text" class="form-input dark-form-input" value="Nom Utilisateur">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input dark-form-input" value="email@exemple.com">
+            </div>
+            <button class="save-btn">Sauvegarder les modifications</button>
+        </div>
+
+        <div class="account-card dark-account-card">
+            <h3>Statistiques</h3>
+            <div class="account-stats">
+                <div class="stat-item dark-stat-item">
+                    <div class="stat-item-icon" style="color: #F59E0B;">
+                        <i class="fas fa-gem"></i>
+                    </div>
+                    <div class="stat-item-value">5</div>
+                    <div class="stat-item-label">Gemmes</div>
+                </div>
+                <div class="stat-item dark-stat-item">
+                    <div class="stat-item-icon" style="color: #3B82F6;">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-item-value">24</div>
+                    <div class="stat-item-label">Prédictions vues</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
