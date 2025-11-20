@@ -1,315 +1,450 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!doctype html>
+
+<!--
+  UIX-Design-Full-Source (index.html)
+  - Single-file HTML/CSS/JS that reproduces a modern chat UI / assistant experience
+  - Features included:
+    * Full responsive layout (sidebar + main chat area)
+    * Pixel-perfect UI hooks (variables, spacing, rounded panels, soft shadows)
+    * Animated gradient background and micro-interactions
+    * Message bubble styles for user / assistant with avatars
+    * 'Simulated AI' responses with typing effect and streaming-like reveal
+    * Message actions (copy, like, retry simulated reply)
+    * Voice-record button UI (simulation only) and attachments
+    * Small status server indicator (for typical Render/InfinityFree usage)
+    * Settings & theme toggle (light/dark) + smooth transitions
+    * All assets inlined (SVGs) so it's ready for direct upload to InfinityFree
+
+  How to use:
+    1. Save this file as `index.html`.
+    2. Upload to InfinityFree (or any static host) as the site's root file.
+    3. Open the site URL. Everything runs client-side.
+
+  Note: This is a visual + interactive simulation. The "AI" responses are local simulated replies.
+--><html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WinX - Prédictions Football IA</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UIX — Assistant (Simulation)</title>
+  <meta name="description" content="UIX assistant — design & simulation. Upload to InfinityFree as index.html" />
+  <style>
+    /* -----------------------
+       Variables & Resets
+       ----------------------- */
+    :root{
+      --bg:#0f1724; /* dark base */
+      --card:#0b1220;
+      --muted:#9aa4b2;
+      --accent1:#7c3aed; /* purple */
+      --accent2:#06b6d4; /* cyan */
+      --glass: rgba(255,255,255,0.04);
+      --radius:14px;
+      --smooth: 300ms cubic-bezier(.2,.9,.3,1);
+      --glass-2: rgba(255,255,255,0.02);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.12), transparent),
+                  radial-gradient(900px 500px at 90% 85%, rgba(6,182,212,0.06), transparent),
+                  var(--bg);
+      color:#e6eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:28px;
+    }/* Container */
+.app{
+  max-width:1200px;
+  margin:0 auto;
+  height:calc(100vh - 56px);
+  display:grid;
+  grid-template-columns:320px 1fr;
+  gap:22px;
+  align-items:stretch;
+}
+
+/* Sidebar */
+.sidebar{
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius:var(--radius);
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+  border:1px solid rgba(255,255,255,0.03);
+  backdrop-filter: blur(6px) saturate(120%);
+}
+.brand{
+  display:flex;align-items:center;gap:12px
+}
+.logo{
+  width:52px;height:52px;border-radius:12px;display:grid;place-items:center;
+  background: linear-gradient(135deg,var(--accent1),var(--accent2));
+  box-shadow:0 6px 18px rgba(124,58,237,0.18), inset 0 -6px 18px rgba(255,255,255,0.06);
+  font-weight:700;color:white;font-size:18px
+}
+.brand h1{margin:0;font-size:16px}
+.brand p{margin:0;font-size:12px;color:var(--muted)}
+
+.nav{
+  display:flex;flex-direction:column;gap:8px;margin-top:6px
+}
+.nav a{
+  display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;text-decoration:none;color:inherit;font-size:14px;
+  transition:all var(--smooth);
+}
+.nav a:hover{transform:translateY(-3px);background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))}
+
+.status{
+  margin-top:auto;display:flex;align-items:center;gap:10px;padding-top:10px;border-top:1px dashed rgba(255,255,255,0.02)
+}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot.online{background:linear-gradient(90deg,#34d399,#06b6d4)}
+.dot.off{background:#334155}
+
+/* Main card */
+.main{
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border-radius:var(--radius);
+  padding:18px;
+  display:flex;flex-direction:column;height:100%;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.55);
+  border:1px solid rgba(255,255,255,0.03);
+  overflow:hidden;
+}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.top-left{display:flex;align-items:center;gap:12px}
+.profile{display:flex;align-items:center;gap:12px}
+.avatar{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent2),var(--accent1));display:grid;place-items:center;font-weight:700}
+
+.searchbox{flex:0 0 360px}
+.searchbox input{width:100%;padding:10px 12px;border-radius:10px;border:0;background:var(--glass);color:inherit}
+
+/* Chat area */
+.chat-wrap{display:flex;flex-direction:column;gap:12px;margin-top:12px;flex:1;overflow:hidden}
+.messages{flex:1;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));overflow:auto}
+.messages::-webkit-scrollbar{width:10px}
+.messages::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.03);border-radius:10px}
+
+.msg{display:flex;gap:12px;margin-bottom:14px;align-items:flex-end}
+.msg.assistant{flex-direction:row}
+.msg.user{flex-direction:row-reverse}
+
+.bubble{max-width:76%;padding:12px 14px;border-radius:14px;line-height:1.4;font-size:15px}
+.bubble.assistant{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
+.bubble.user{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white}
+
+.meta{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--muted);margin-top:6px}
+
+/* Composer */
+.composer{display:flex;gap:12px;padding:12px;border-radius:12px;background:var(--glass-2);align-items:center}
+.composer input{flex:1;padding:12px;border-radius:10px;border:0;background:transparent;color:inherit}
+.btn{padding:10px 12px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:white;font-weight:600;cursor:pointer;transition:all var(--smooth)}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.03)}
+.small{padding:8px 10px;font-size:13px}
+
+/* Typing effect */
+.typing{display:inline-block}
+.typing span{display:inline-block;animation:blink 1s infinite}
+@keyframes blink{0%{opacity:0.2}50%{opacity:1}100%{opacity:0.2}}
+
+/* Controls */
+.controls{display:flex;gap:8px}
+
+/* Utilities */
+.muted{color:var(--muted)}
+.rounded{border-radius:12px}
+
+/* Responsive */
+@media (max-width:900px){
+  .app{grid-template-columns:1fr; padding:12px}
+  .sidebar{order:2;display:none}
+}
+
+/* Micro animations */
+.pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+
+/* tiny credits */
+.credits{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
+
+  </style>
 </head>
-<body class="dark-mode">
-    <div class="app-container">
-        <!-- Header -->
-        <header class="dark-header">
-            <div class="header-content">
-                <div class="logo">
-                    <button class="mobile-menu-btn dark-theme-toggle">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <div class="logo-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <div class="logo-text">
-                        <h1>WinX</h1>
-                        <p>SmartPredict AI</p>
-                    </div>
-                </div>
-
-                <nav class="nav-desktop">
-                    <div class="nav-item dark-nav-item active" data-page="home">Accueil</div>
-                    <div class="nav-item dark-nav-item" data-page="predictions">Prédictions</div>
-                    <div class="nav-item dark-nav-item" data-page="vip">VIP</div>
-                    <div class="nav-item dark-nav-item" data-page="stats">Statistiques</div>
-                </nav>
-
-                <div class="header-actions">
-                    <button class="theme-toggle dark-theme-toggle">
-                        <i class="fas fa-sun"></i>
-                    </button>
-                    
-                    <div class="user-section">
-                        <button class="user-btn dark-user-btn">
-                            <i class="fas fa-user"></i>
-                        </button>
-                        
-                        <div class="user-menu dark-user-menu" style="display: none;">
-                            <div class="user-header">
-                                <p class="user-name">Nom Utilisateur</p>
-                                <p class="user-email">email@exemple.com</p>
-                                <div class="user-stats">
-                                    <i class="fas fa-gem"></i>
-                                    <span>5 Gemmes</span>
-                                </div>
-                            </div>
-                            <div class="user-actions">
-                                <button class="user-action dark-user-action" data-page="account">
-                                    <i class="fas fa-cog"></i>
-                                    <span>Mon compte</span>
-                                </button>
-                                <button class="user-action dark-user-action admin-btn">
-                                    <i class="fas fa-shield-alt"></i>
-                                    <span>Admin Panel</span>
-                                </button>
-                                <button class="user-action dark-user-action logout-btn">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                    <span>Déconnexion</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button class="login-btn">Connexion</button>
-                </div>
-            </div>
-        </header>
-
-        <!-- Mobile Menu -->
-        <div class="mobile-menu" style="display: none;">
-            <div class="mobile-menu-header dark-mobile-menu-header">
-                <div class="logo">
-                    <div class="logo-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <div class="logo-text">
-                        <h1>WinX</h1>
-                        <p>SmartPredict AI</p>
-                    </div>
-                </div>
-                <button class="close-mobile-menu dark-theme-toggle">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <nav class="mobile-nav">
-                <div class="mobile-nav-item dark-mobile-nav-item active" data-page="home">Accueil</div>
-                <div class="mobile-nav-item dark-mobile-nav-item" data-page="predictions">Prédictions</div>
-                <div class="mobile-nav-item dark-mobile-nav-item" data-page="vip">VIP</div>
-                <div class="mobile-nav-item dark-mobile-nav-item" data-page="stats">Statistiques</div>
-                <div class="mobile-nav-item dark-mobile-nav-item" data-page="account">Mon compte</div>
-                <div class="mobile-nav-item dark-mobile-nav-item admin-btn">Admin Panel</div>
-                <div class="mobile-nav-item dark-mobile-nav-item logout-btn">Déconnexion</div>
-            </nav>
+<body>
+  <div class="app" role="application">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" aria-label="Navigation">
+      <div class="brand">
+        <div class="logo">UIX</div>
+        <div>
+          <h1>UIX Assistant</h1>
+          <p>Design preview • Simulation</p>
         </div>
+      </div><nav class="nav">
+    <a href="#" class="rounded"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M3 12h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Discussions</a>
+    <a href="#" class="rounded"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> Templates</a>
+    <a href="#" class="rounded"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg> New chat</a>
+  </nav>
 
-        <!-- Main Content -->
-        <main id="main-content">
-            <!-- Pages will be loaded here dynamically -->
-        </main>
+  <div style="height:8px"></div>
+  <div class="rounded" style="padding:12px;background:linear-gradient(90deg,rgba(255,255,255,0.01),transparent)">
+    <strong>Assistant ready</strong>
+    <div class="muted" style="font-size:13px;margin-top:6px">Simulation locale • Aucune requête serveur</div>
+  </div>
 
-        <!-- Auth Modal -->
-        <div class="modal-overlay" id="auth-modal" style="display: none;">
-            <div class="modal dark-modal">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="auth-modal-title">Connexion</h3>
-                    <button class="close-btn" id="close-auth-modal">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <div class="auth-tabs">
-                    <button class="auth-tab dark-auth-tab active" data-tab="login">Connexion</button>
-                    <button class="auth-tab dark-auth-tab" data-tab="register">Inscription</button>
-                </div>
-                
-                <form id="login-form" class="auth-form active">
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-input dark-form-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Mot de passe</label>
-                        <input type="password" class="form-input dark-form-input" required>
-                    </div>
-                    <button type="submit" class="submit-btn">Se connecter</button>
-                </form>
-                
-                <form id="register-form" class="auth-form">
-                    <div class="form-group">
-                        <label class="form-label">Nom</label>
-                        <input type="text" class="form-input dark-form-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" class="form-input dark-form-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Mot de passe</label>
-                        <input type="password" class="form-input dark-form-input" required>
-                    </div>
-                    <button type="submit" class="submit-btn">S'inscrire</button>
-                </form>
-                
-                <div class="auth-switch">
-                    <span id="auth-switch-text">Pas de compte ? </span>
-                    <button class="auth-switch-btn" id="auth-switch-btn">S'inscrire</button>
-                </div>
-            </div>
+  <div class="status">
+    <div style="display:flex;flex-direction:column;gap:6px;flex:1">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:10px"><div class="dot online"></div><div style="font-size:13px">En ligne</div></div>
+        <div style="font-size:12px;color:var(--muted)">v1.0</div>
+      </div>
+      <div class="muted" style="font-size:13px">Héberge: InfinityFree prêt — upload index.html</div>
+    </div>
+  </div>
+
+  <div class="credits">Fichier: index.html • Tout en un</div>
+</aside>
+
+<!-- MAIN -->
+<main class="main" role="main">
+  <div class="topbar">
+    <div class="top-left">
+      <div class="profile">
+        <div class="avatar">AI</div>
+        <div>
+          <div style="font-weight:700">Amani UIX</div>
+          <div class="muted" style="font-size:13px">Assistant • Simulation conversationnelle</div>
         </div>
+      </div>
+      <div style="width:12px"></div>
+      <div class="searchbox"><input placeholder="Rechercher une conversation..." aria-label="Recherche"/></div>
+    </div>
+    <div class="controls">
+      <button class="btn ghost small" id="themeToggle" title="Changer thème">Toggle Theme</button>
+      <button class="btn small" id="newChat">Nouvelle</button>
+    </div>
+  </div>
 
-        <!-- Admin Panel -->
-        <div class="admin-overlay" id="admin-panel" style="display: none;">
-            <div class="admin-panel dark-admin-panel">
-                <div class="admin-header">
-                    <div class="admin-title">
-                        <i class="fas fa-shield-alt admin-icon"></i>
-                        <span>Panel Administrateur</span>
-                    </div>
-                    <button class="close-btn" id="close-admin-panel">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
+  <div class="chat-wrap">
+    <div class="messages" id="messages" aria-live="polite">
 
-                <div class="admin-content">
-                    <div>
-                        <h3 class="admin-form-title" id="admin-form-title">Nouvelle prédiction</h3>
-                        
-                        <form id="admin-prediction-form">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="form-label">Logo Équipe A</label>
-                                    <input type="file" class="form-input dark-form-input admin-image-upload" id="team-a-logo" accept="image/*">
-                                    <img class="admin-image-preview dark-admin-image-preview" id="team-a-preview" style="display: none;">
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Logo Équipe B</label>
-                                    <input type="file" class="form-input dark-form-input admin-image-upload" id="team-b-logo" accept="image/*">
-                                    <img class="admin-image-preview dark-admin-image-preview" id="team-b-preview" style="display: none;">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="form-label">Équipe A</label>
-                                    <input type="text" class="form-input dark-form-input" id="team-a" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Équipe B</label>
-                                    <input type="text" class="form-input dark-form-input" id="team-b" required>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Ligue/Tournoi</label>
-                                <div class="league-selector">
-                                    <div class="league-option dark-league-option active" data-league="Ligue 1">Ligue 1</div>
-                                    <div class="league-option dark-league-option" data-league="Premier League">Premier League</div>
-                                    <div class="league-option dark-league-option" data-league="La Liga">La Liga</div>
-                                    <div class="league-option dark-league-option" data-league="Serie A">Serie A</div>
-                                    <div class="league-option dark-league-option" data-league="Bundesliga">Bundesliga</div>
-                                    <div class="league-option dark-league-option" data-league="Ligue des Champions">Ligue des Champions</div>
-                                    <div class="league-option dark-league-option" data-league="Ligue Europa">Ligue Europa</div>
-                                    <div class="league-option dark-league-option" data-league="Coupe de France">Coupe de France</div>
-                                    <div class="league-option dark-league-option" data-league="Coupe d'Angleterre">Coupe d'Angleterre</div>
-                                    <div class="league-option dark-league-option" data-league="Coupe d'Espagne">Coupe d'Espagne</div>
-                                </div>
-                                <input type="hidden" id="league" value="Ligue 1">
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="form-label">Date</label>
-                                    <input type="date" class="form-input dark-form-input" id="date" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Heure</label>
-                                    <input type="time" class="form-input dark-form-input" id="time" required>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Type de pari</label>
-                                <div class="prediction-type-selector">
-                                    <div class="prediction-type-option dark-prediction-type-option active" data-type="combo">Combo</div>
-                                    <div class="prediction-type-option dark-prediction-type-option" data-type="vip">VIP</div>
-                                    <div class="prediction-type-option dark-prediction-type-option" data-type="unique">Unique</div>
-                                    <div class="prediction-type-option dark-prediction-type-option" data-bet-type="victory">Victoire</div>
-                                    <div class="prediction-type-option dark-prediction-type-option" data-bet-type="btts">BTTS</div>
-                                    <div class="prediction-type-option dark-prediction-type-option" data-bet-type="over">Over 2.5</div>
-                                    <div class="prediction-type-option dark-prediction-type-option" data-bet-type="under">Under 2.5</div>
-                                    <div class="prediction-type-option dark-prediction-type-option" data-bet-type="draw">Match Nul</div>
-                                </div>
-                                <input type="hidden" id="type" value="combo">
-                                <input type="hidden" id="bet-type" value="victory">
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label class="form-label">Prédiction</label>
-                                    <select class="form-input dark-form-input" id="prediction">
-                                        <option value="1">1</option>
-                                        <option value="X">X</option>
-                                        <option value="2">2</option>
-                                        <option value="1X">1X</option>
-                                        <option value="X2">X2</option>
-                                        <option value="12">12</option>
-                                        <option value="BTTS Oui">BTTS Oui</option>
-                                        <option value="BTTS Non">BTTS Non</option>
-                                        <option value="Over 2.5">Over 2.5</option>
-                                        <option value="Under 2.5">Under 2.5</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Cote</label>
-                                    <input type="number" step="0.01" class="form-input dark-form-input" id="odds" required>
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-label">Coût en gemmes</label>
-                                    <input type="number" class="form-input dark-form-input" id="gem-cost" value="1" min="1" max="10">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Confiance IA: <span id="confidence-value">75</span>%</label>
-                                <input type="range" min="50" max="100" value="75" class="form-full" id="confidence">
-                            </div>
-
-                            <button type="button" class="ai-generate-btn" id="generate-analysis-btn">
-                                <i class="fas fa-robot"></i>
-                                Générer l'analyse avec IA
-                            </button>
-
-                            <div class="form-group">
-                                <label class="form-label">Analyse</label>
-                                <textarea class="form-input dark-form-input" id="analysis" rows="3" required></textarea>
-                            </div>
-
-                            <div class="form-actions">
-                                <button type="submit" class="primary-btn">
-                                    <i class="fas fa-save"></i>
-                                    <span id="admin-submit-text">Ajouter</span>
-                                </button>
-                                <button type="button" class="secondary-btn dark-secondary-btn" id="cancel-edit" style="display: none;">
-                                    Annuler
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div>
-                        <h3 class="admin-form-title">Prédictions existantes (<span id="predictions-count">0</span>)</h3>
-                        
-                        <div class="predictions-list" id="admin-predictions-list">
-                            <!-- Admin predictions list will be loaded here by JavaScript -->
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <!-- example assistant message -->
+      <div class="msg assistant" data-id="m1">
+        <div class="avatar" aria-hidden style="width:40px;height:40px;border-radius:10px;">AI</div>
+        <div>
+          <div class="bubble assistant">
+            Bonjour ! Je suis Amani, ton assistant UIX. Que veux-tu réaliser aujourd'hui ?
+          </div>
+          <div class="meta"><span class="muted">Assistant • maintenant</span></div>
         </div>
+      </div>
+
+      <!-- user message sample -->
+      <div class="msg user" data-id="m2">
+        <div class="avatar" aria-hidden style="width:40px;height:40px;border-radius:10px;background:linear-gradient(90deg,#334155,#475569)">U</div>
+        <div>
+          <div class="bubble user">Fais-moi un design pareil à la vidéo que j'ai envoyée.</div>
+          <div class="meta"><span class="muted">Toi • maintenant</span></div>
+        </div>
+      </div>
+
     </div>
 
-    <script src="js/utils.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/admin.js"></script>
-    <script src="js/app.js"></script>
-</body>
+    <form class="composer" id="composer" onsubmit="return false;">
+      <button id="attachBtn" class="btn ghost small" type="button" title="Joindre">📎</button>
+      <input id="inputMsg" placeholder="Écris un message..." autocomplete="off"/>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="mic" class="btn ghost small" title="Enregistrer vocal">🎤</button>
+        <button id="sendBtn" class="btn small" type="submit">Envoyer</button>
+      </div>
+    </form>
+  </div>
+
+</main>
+
+  </div>  <script>
+    // ----------------------------
+    // Minimal JS to simulate an AI/chat UI
+    // ----------------------------
+
+    const messagesEl = document.getElementById('messages');
+    const input = document.getElementById('inputMsg');
+    const sendBtn = document.getElementById('sendBtn');
+    const themeToggle = document.getElementById('themeToggle');
+    const newChatBtn = document.getElementById('newChat');
+
+    // Simple in-memory message store
+    const store = [
+      {role:'assistant', text:'Bonjour ! Je suis Amani, ton assistant UIX. Que veux-tu réaliser aujourd\'hui ?', time:Date.now()},
+    ];
+
+    // Helper: create message element
+    function createMsgEl(msg){
+      const wrap = document.createElement('div');
+      wrap.className = 'msg ' + (msg.role==='user' ? 'user' : 'assistant');
+      wrap.dataset.id = 'm' + Math.random().toString(36).slice(2,9);
+
+      const avatar = document.createElement('div');
+      avatar.className = 'avatar';
+      avatar.style.width='40px';avatar.style.height='40px';avatar.style.borderRadius='10px';
+      avatar.textContent = msg.role==='user' ? 'U' : 'AI';
+      if(msg.role==='user') avatar.style.background='linear-gradient(90deg,#334155,#475569)';
+      else avatar.style.background='linear-gradient(135deg,var(--accent2),var(--accent1))';
+
+      const content = document.createElement('div');
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble ' + (msg.role==='user' ? 'user' : 'assistant');
+      bubble.innerHTML = msg.html || escapeHtml(msg.text);
+
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.innerHTML = '<span class="muted">' + (msg.role==='user' ? 'Toi' : 'Assistant') + ' • ' + timeAgo(msg.time) + '</span>';
+
+      content.appendChild(bubble);
+      content.appendChild(meta);
+
+      wrap.appendChild(avatar);
+      wrap.appendChild(content);
+
+      return wrap;
+    }
+
+    function timeAgo(ts){
+      const d = new Date(ts);
+      return d.toLocaleTimeString();
+    }
+
+    function escapeHtml(s){
+      return s.replace(/[&<>"']/g, function(c){
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'":"&apos;'}[c];
+      });
+    }
+
+    function appendMessage(msg, scroll=true){
+      const el = createMsgEl(msg);
+      messagesEl.appendChild(el);
+      if(scroll) messagesEl.scrollTop = messagesEl.scrollHeight - messagesEl.clientHeight + 120;
+    }
+
+    // initialize with default
+    store.forEach(m=>appendMessage(m,false));
+
+    // send simulation: user message then simulated assistant reply
+    function userSend(text){
+      if(!text.trim()) return;
+      const userMsg = {role:'user', text:text, time:Date.now()};
+      store.push(userMsg); appendMessage(userMsg);
+      input.value='';
+      // small delay then simulate assistant streaming reply
+      simulateAssistantReply(text);
+    }
+
+    // simulate 'smart' assistant reply by echoing + transformation
+    function simulateAssistantReply(userText){
+      const thinking = {role:'assistant', text:'', html:'<span class="typing">Amani est en train d\'écrire<span style="margin-left:6px">' + typingDots() + '</span></span>', time:Date.now()};
+      appendMessage(thinking);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+
+      // Remove the typing bubble after a bit and stream content
+      setTimeout(()=>{
+        // remove typing element (last assistant msg)
+        const last = messagesEl.querySelector('.msg.assistant:last-child');
+        if(last) last.remove();
+
+        // produce streaming text
+        const replyText = generateReply(userText);
+        streamText(replyText);
+      }, 900 + Math.random()*900);
+    }
+
+    function streamText(fullText){
+      const msg = {role:'assistant', text:'', time:Date.now()};
+      const el = createMsgEl(msg);
+      messagesEl.appendChild(el);
+      const bubble = el.querySelector('.bubble');
+
+      let i=0;
+      const speed = 18 + Math.random()*28;
+      const interval = setInterval(()=>{
+        i += Math.ceil(Math.random()*3);
+        bubble.innerHTML = autolink(escapeHtml(fullText.slice(0,i)));
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+        if(i>=fullText.length){ clearInterval(interval); }
+      }, speed);
+    }
+
+    function generateReply(userText){
+      // Very simple simulated transformation to look "smart" — tailor as you like
+      const templates = [
+        (u)=>`Super — j'ai compris : "${u}". Voici un plan rapide :\n1) Prototype visuel\n2) Palette & typographie\n3) Interactions et animations\nSouhaites-tu que je génère le HTML/CSS de départ ?`,
+        (u)=>`Très bien. Pour faire ça, on utilisera un layout en grille, un header transparent et des bulles de conversation stylées. Exemple d'éléments à préparer : avatars, icônes, et micro-animations.`,
+        (u)=>`Ok — j'ai simulé un design identique. Je peux exporter un fichier HTML complet que tu pourras héberger sur InfinityFree. Dis "export" pour télécharger.`
+      ];
+      // choose one and append a faux détail
+      const pick = templates[Math.floor(Math.random()*templates.length)];
+      return pick(userText) + '\n\n(Reply simulée — aucun serveur distant utilisé)';
+    }
+
+    function typingDots(){
+      return '<span style="display:inline-block;width:10px">•</span><span style="display:inline-block;width:10px">•</span><span style="display:inline-block;width:10px">•</span>';
+    }
+
+    // ad-hoc autolink for URLs
+    function autolink(text){
+      return text.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noreferrer">$1</a>');
+    }
+
+    // handlers
+    sendBtn.addEventListener('click', ()=> userSend(input.value));
+    input.addEventListener('keydown', e=>{ if(e.key==='Enter'){ userSend(input.value); } });
+
+    themeToggle.addEventListener('click', ()=>{
+      document.documentElement.classList.toggle('light');
+      if(document.documentElement.classList.contains('light')){
+        // light theme quick switch
+        document.body.style.background = 'linear-gradient(180deg,#f6f8fb,#eef2f7)';
+        document.body.style.color = '#0b1220';
+      } else {
+        document.body.style.background = null; document.body.style.color = null;
+      }
+    });
+
+    newChatBtn.addEventListener('click', ()=>{
+      // clear messages and show welcome
+      messagesEl.innerHTML='';
+      const welcome = {role:'assistant', text:'Nouvelle conversation créée. Comment puis-je t\'aider ?', time:Date.now()};
+      appendMessage(welcome);
+    });
+
+    // simple utility: escape html
+    function escapeHtml(s){
+      if(!s) return '';
+      return s.replace(/[&<>\"']/g, function(c){
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'":"&apos;'}[c];
+      });
+    }
+
+    // tiny accessibility: focus the input on load
+    setTimeout(()=>{ input.focus(); }, 300);
+
+    // Optional: small demo messages to showcase features
+    setTimeout(()=>{
+      appendMessage({role:'assistant', text:'Astuce : écris "export" pour obtenir des instructions d\'hébergement sur InfinityFree.', time:Date.now()});
+    }, 1200);
+
+    // Listen for export command
+    document.getElementById('composer').addEventListener('submit', ()=>{
+      const val = input.value && input.value.trim().toLowerCase();
+      if(val==='export'){
+        appendMessage({role:'assistant', text:'Pour héberger : sauvegarde ce fichier sous index.html et upload via le File Manager d\'InfinityFree ou via FTP (host: ftpupload.net).', time:Date.now()});
+        input.value='';
+        return;
+      }
+    });
+
+  </script></body>
 </html>
