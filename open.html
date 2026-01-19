@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GigaEarn Pro | Dashboard Simulation 8K</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #7000ff;
+            --bg-dark: #050505;
+            --glass: rgba(255, 255, 255, 0.05);
+            --text: #ffffff;
+            --success: #00ff88;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text);
+            overflow-x: hidden;
+            background: radial-gradient(circle at top right, #1a1a2e, #050505);
+            min-height: 100vh;
+        }
+
+        /* --- Header & Glassmorphism --- */
+        nav {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        .balance-card {
+            background: var(--glass);
+            padding: 10px 20px;
+            border-radius: 15px;
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+        }
+
+        /* --- Main Dashboard --- */
+        .container { padding: 30px 5%; max-width: 1200px; margin: 0 auto; }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-box {
+            background: var(--glass);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .stat-box:hover { transform: translateY(-10px); border-color: var(--secondary); }
+
+        /* --- Task Section --- */
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .task-card {
+            background: linear-gradient(145deg, rgba(20,20,20,0.8), rgba(40,40,40,0.8));
+            border-radius: 25px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--glass);
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.5s;
+        }
+
+        /* --- Progress Bar --- */
+        .progress-container {
+            width: 100%;
+            height: 10px;
+            background: #222;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        #main-progress {
+            width: 0%;
+            height: 100%;
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+            transition: width 1s ease-in-out;
+        }
+
+        /* --- Modal Retrait --- */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(15px);
+        }
+
+        .modal-content {
+            background: #111;
+            padding: 40px;
+            border-radius: 30px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--primary);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #222;
+            border: 1px solid var(--glass);
+            color: white;
+            border-radius: 10px;
+        }
+
+        /* Animations FPS */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">GIGA EARN PRO</div>
+        <div class="balance-card">
+            <span id="balance-display">0.00</span> $
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="stat-box" style="margin-bottom: 30px;">
+            <h3>Objectif de Retrait (Minimum 100$)</h3>
+            <div class="progress-container">
+                <div id="main-progress"></div>
+            </div>
+            <p id="progress-text">Progression : 0%</p>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat-box">
+                <i class="fas fa-video" style="font-size: 2rem; color: var(--primary);"></i>
+                <h4>Vidéos</h4>
+                <p>Disponibles: 12</p>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-mouse-pointer" style="font-size: 2rem; color: var(--secondary);"></i>
+                <h4>Clicks</h4>
+                <p>Payés: 0.50$ / click</p>
+            </div>
+        </div>
+
+        <div class="task-grid">
+            <div class="task-card">
+                <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=400" alt="ads" style="width:100%; border-radius:15px; margin-bottom:15px;">
+                <h3>Regarder Vidéo HD</h3>
+                <p>Récompense : +5.00$</p>
+                <button class="btn-action" onclick="simulateTask(5, 'Vidéo')">Lancer la vidéo</button>
+            </div>
+
+            <div class="task-card">
+                <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=400" alt="link" style="width:100%; border-radius:15px; margin-bottom:15px;">
+                <h3>Visiter Lien Sponsor</h3>
+                <p>Récompense : +2.50$</p>
+                <button class="btn-action" onclick="simulateTask(2.5, 'Lien')">Ouvrir le lien</button>
+            </div>
+        </div>
+
+        <center style="margin-top: 50px;">
+            <button class="btn-action" style="max-width: 300px; background: var(--success);" onclick="openWithdraw()">RETIRER MES GAINS</button>
+        </center>
+    </div>
+
+    <div class="modal" id="withdrawModal">
+        <div class="modal-content">
+            <h2 style="text-align: center; color: var(--primary);">Formulaire de Retrait</h2>
+            <p style="font-size: 0.8rem; margin-bottom: 20px; color: #888;">Note : Simulation de transfert international sécurisé.</p>
+            
+            <form id="payForm">
+                <label>Méthode de Paiement</label>
+                <select id="method" required>
+                    <option value="paypal">PayPal Global</option>
+                    <option value="lumicash">Lumicash (Burundi)</option>
+                    <option value="crdb">CRDB Bank</option>
+                    <option value="western">Western Union</option>
+                </select>
+
+                <input type="text" id="acc_name" placeholder="Nom Complet du Compte" required>
+                <input type="text" id="acc_num" placeholder="Numéro de compte / Email" required>
+                <input type="number" id="amount_draw" placeholder="Montant à retirer" required>
+
+                <button type="submit" class="btn-action">VALIDER LE TRANSFERT</button>
+                <button type="button" class="btn-action" style="background: #333;" onclick="closeModal()">ANNULER</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- State Management ---
+        let balance = 0;
+        const minWithdraw = 100;
+
+        // --- Core Logic ---
+        function updateUI() {
+            document.getElementById('balance-display').innerText = balance.toFixed(2);
+            let prog = (balance / minWithdraw) * 100;
+            if(prog > 100) prog = 100;
+            
+            document.getElementById('main-progress').style.width = prog + '%';
+            document.getElementById('progress-text').innerText = `Progression : ${prog.toFixed(1)}%`;
+        }
+
+        function simulateTask(amt, type) {
+            alert(`Simulation : Chargement de la tâche ${type}...`);
+            setTimeout(() => {
+                balance += amt;
+                updateUI();
+                showFloatingText(`+${amt}$`);
+            }, 1500);
+        }
+
+        function showFloatingText(txt) {
+            const el = document.createElement('div');
+            el.innerText = txt;
+            el.style.position = 'fixed';
+            el.style.top = '50%';
+            el.style.left = '50%';
+            el.style.color = 'var(--success)';
+            el.style.fontSize = '2rem';
+            el.style.fontWeight = 'bold';
+            el.style.transition = '2s';
+            document.body.appendChild(el);
+            setTimeout(() => {
+                el.style.transform = 'translateY(-100px)';
+                el.style.opacity = '0';
+            }, 100);
+            setTimeout(() => el.remove(), 2000);
+        }
+
+        // --- Withdraw Logic ---
+        function openWithdraw() {
+            if(balance < minWithdraw) {
+                alert(`Solde insuffisant ! Vous avez besoin de ${minWithdraw}$ pour retirer.`);
+                return;
+            }
+            document.getElementById('withdrawModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('withdrawModal').style.display = 'none';
+        }
+
+        document.getElementById('payForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const data = {
+                method: document.getElementById('method').value,
+                name: document.getElementById('acc_name').value,
+                account: document.getElementById('acc_num').value,
+                amount: document.getElementById('amount_draw').value,
+                date: new Date().toISOString()
+            };
+
+            // Simulation Sauvegarde Log (Console & LocalStorage)
+            console.log("Données de retrait capturées (Simulation TXT) :", data);
+            localStorage.setItem('last_withdraw_log', JSON.stringify(data));
+
+            alert("TRANSFERT EN COURS...\n\nSystème: Vérification des serveurs " + data.method.toUpperCase() + ".\nVeuillez patienter 24h pour la validation.");
+            closeModal();
+        });
+
+        // Init
+        updateUI();
+    </script>
+
+</body>
+</html>
